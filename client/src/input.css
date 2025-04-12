@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+body {
+    background-image: url(assets/bluetile.png);
+    background-repeat: repeat;
+    background-attachment: fixed;
+}
+
+.text-shadow {
+    text-shadow: 1.5px 1.5px 0px rgba(0, 0, 0, 1);
+}
+
+#consulta {
+    background: linear-gradient(180deg, #328CCC, #082D78),
+                linear-gradient(180deg, #00ACD6 -3.65%, #00FED4 141.78%),
+                linear-gradient(0deg, #F6F6F6, #F6F6F6),
+                linear-gradient(180deg, #8B8BC0, #45456C);
+    border-radius: 20px;
+    border: 3px solid #000;
+    padding: 20px;
+    margin: 20px auto;
+    width: 80%;
+    max-width: 800px;
+    box-shadow: 0 2px 0 #000, inset 0 -4px 0 rgba(118, 160, 191, .2), inset 0 4px 0 hsla(0, 0%, 100%, .25);
+    color:white;
+}
