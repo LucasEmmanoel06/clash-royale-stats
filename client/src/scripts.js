@@ -1,9 +1,7 @@
 // Funções Fetch
 async function fetchDadosConsulta1() {
-  return {
-    vitorias: 120,
-    derrotas: 80
-  };
+  const res = await fetch('http://localhost:3000/consulta1');
+  return res.json();
 }
 
 async function fetchDadosConsulta2() {
@@ -27,9 +25,9 @@ async function renderConsulta1() {
   new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: ['Vitórias', 'Derrotas'],
+      labels: ['Vitórias (%)', 'Derrotas (%)'],
       datasets: [{
-        data: [data.vitorias, data.derrotas],
+        data: [data.victoryPercentage, data.defeatPercentage],
         backgroundColor: ['#10b981', '#ef4444'],
       }]
     },
