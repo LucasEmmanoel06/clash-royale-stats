@@ -10,14 +10,13 @@ const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
 const dbName = "clashRoyale";
 
-// Conectar ao MongoDB uma vez quando o servidor iniciar
 async function connectToDatabase() {
   try {
     await client.connect();
     console.log("Conectado ao MongoDB com sucesso!");
   } catch (err) {
     console.error("Erro ao conectar ao MongoDB:", err);
-    process.exit(1); // Encerra o servidor se não conseguir conectar
+    process.exit(1);
   }
 }
 
@@ -112,9 +111,9 @@ app.get('/consulta1', async (req, res) => {
 app.get('/consulta3', async (req, res) => {
   try {
     const db = client.db(dbName);
-    const Player = db.collection('Player');
+    const players = db.collection('players');
 
-    const resultado = await Player.find(
+    const resultado = await players.find(
       { trophies: { $gt: 7000 } },
       { projection: { name: 1, trophies: 1, _id: 0 } }
     ).toArray();
@@ -132,6 +131,6 @@ app.get('/test-connection', (req, res) => {
 
 const PORT = 3000;
 app.listen(PORT, async () => {
-  await connectToDatabase(); // Conecta ao MongoDB antes de iniciar o servidor
+  await connectToDatabase();
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
