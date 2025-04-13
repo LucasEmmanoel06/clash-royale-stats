@@ -6,7 +6,7 @@ body {
     background-attachment: fixed;
 }
 
-.text-shadow {
+.bold-text-shadow {
     text-shadow: 1.5px 1.5px 0px rgba(0, 0, 0, 1);
 }
 

@@ -1,4 +1,3 @@
-// Simulação de dados vindos do backend
     async function fetchDadosConsulta1() {
         return {
           vitorias: 120,
@@ -27,7 +26,6 @@
         });
       }
   
-      // Renderizar gráfico da Consulta 1
       async function renderConsulta1() {
         const data = await fetchDadosConsulta1();
         const ctx = document.getElementById('graficoConsulta1').getContext('2d');
@@ -47,7 +45,6 @@
         });
       }
   
-      // Renderizar decks da Consulta 2
       async function renderConsulta2() {
         const decks = await fetchDadosConsulta2();
         const lista = document.getElementById('decksVitoriosos');
@@ -58,8 +55,7 @@
           lista.appendChild(li);
         });
       }
-  
-      // Inicialização
+
       renderConsulta1();
       renderConsulta2();
       renderConsulta3();
