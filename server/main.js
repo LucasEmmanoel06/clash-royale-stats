@@ -24,9 +24,9 @@ async function connectToDatabase() {
 app.get('/consulta1', async (req, res) => {
   try {
     const db = client.db(dbName);
-    const BattleLog = db.collection('BattleLog');
+    const playerbattles = db.collection('playerbattles');
 
-    const resultado = await BattleLog.aggregate([
+    const resultado = await playerbattles.aggregate([
       {
         $match: {
           $or: [
