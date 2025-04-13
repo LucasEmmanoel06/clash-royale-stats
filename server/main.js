@@ -126,6 +126,10 @@ app.get('/consulta3', async (req, res) => {
   }
 });
 
+app.get('/test-connection', (req, res) => {
+  res.json({ message: 'Conexão bem-sucedida!' });
+});
+
 const PORT = 3000;
 app.listen(PORT, async () => {
   await connectToDatabase(); // Conecta ao MongoDB antes de iniciar o servidor
