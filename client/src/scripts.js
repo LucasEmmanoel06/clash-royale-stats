@@ -1,16 +1,16 @@
 // Funções Fetch
 async function fetchDadosConsulta1() {
-  const res = await fetch('http://localhost:3000/consulta1');
+  const res = await fetch('https://clash-royale-stats-l691.onrender.com/consulta1');
   return res.json();
 }
 
 async function fetchDadosConsulta2() {
-  const res = await fetch('http://localhost:3000/consulta2');
+  const res = await fetch('https://clash-royale-stats-l691.onrender.com/consulta2');
   return res.json();
 }
 
 async function fetchDadosConsulta3() {
-  const res = await fetch('http://localhost:3000/consulta3');
+  const res = await fetch('https://clash-royale-stats-l691.onrender.com/consulta3');
   return res.json();
 }
 
