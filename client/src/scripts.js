@@ -1,19 +1,16 @@
 // Funções Fetch
 async function fetchDadosConsulta1() {
-  const res = await fetch('https://clash-royale-stats-l691.onrender.com/consulta1');
+  const res = await fetch('http://localhost:3000/consulta1');
   return res.json();
 }
 
 async function fetchDadosConsulta2() {
-  return [
-    ["Mega Knight", "Zap", "Log", "Goblin Barrel"],
-    ["Golem", "Night Witch", "Baby Dragon", "Lumberjack"],
-    ["Hog Rider", "Fireball", "Ice Spirit", "Cannon"]
-  ];
+  const res = await fetch('http://localhost:3000/consulta2');
+  return res.json();
 }
 
 async function fetchDadosConsulta3() {
-  const res = await fetch('https://clash-royale-stats-l691.onrender.com/consulta3');
+  const res = await fetch('http://localhost:3000/consulta3');
   return res.json();
 }
 
@@ -39,26 +36,38 @@ async function renderConsulta1() {
 
 async function renderConsulta2() {
   const decks = await fetchDadosConsulta2();
-  const lista = document.getElementById('decksVitoriosos');
+  const lista = document.getElementById('decks50win');
   lista.innerHTML = '';
 
   decks.forEach(deck => {
     const li = document.createElement('li');
-    li.textContent = deck.join(', ');
+    li.innerHTML = `
+      <strong>Player Tag:</strong> ${deck.playerTag}<br>
+      <strong>Deck:</strong> ${deck.deck.map(card => card.name).join(', ')}<br>
+      <strong>Total de Partidas:</strong> ${deck.totalBattles}<br>
+      <strong>Vitórias:</strong> ${deck.wins}<br>
+      <strong>Taxa de Vitória:</strong> ${deck.winRate}%<br><br>
+    `;
     lista.appendChild(li);
   });
 }
 
 async function renderConsulta3() {
-  const dados = await fetchDadosConsulta3();
-  const lista = document.getElementById('listaPlayer');
-  lista.innerHTML = '';
+  try {
+    const dados = await fetchDadosConsulta3();
+    const lista = document.getElementById('listaPlayer');
+    lista.innerHTML = '';
 
-  dados.forEach(jogador => {
     const li = document.createElement('li');
-    li.textContent = `${jogador.name} - ${jogador.trophies} troféus`;
+    li.innerHTML = `
+      <strong>Total de Derrotas:</strong> ${dados.TotalDefeats}
+    `;
     lista.appendChild(li);
-  });
+  } catch (error) {
+    console.error('Erro ao renderizar consulta 3:', error);
+    const lista = document.getElementById('listaPlayer');
+    lista.innerHTML = '<li>Erro ao carregar os dados.</li>';
+  }
 }
 
 // Inicialização das renderizações

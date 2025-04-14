@@ -20,6 +20,7 @@ async function connectToDatabase() {
   }
 }
 
+// Finalizada
 app.get('/consulta1', async (req, res) => {
   try {
     const db = client.db(dbName);
@@ -108,17 +109,183 @@ app.get('/consulta1', async (req, res) => {
   }
 });
 
+app.get('/consulta2', async (req, res) => {
+  try {
+    const db = client.db(dbName);
+    const playerbattles = db.collection('playerbattles');
+
+    const resultado = await playerbattles.aggregate([
+      {
+        $match: {
+          "battleTime": {
+            $gte: "20250410T000000.000Z", // Dia 10 às 00:00:00
+            $lte: "20250412T235959.999Z"  // Dia 12 às 23:59:59.999
+          }
+        }
+      },
+      {
+        $unwind: "$team"
+      },
+      {
+        $project: {
+          playerTag: "$team.tag",
+          deck: "$team.cards",
+          victory: {
+            $gt: ["$team.crowns", 0]
+          },
+          battleTime: 1
+        }
+      },
+      {
+        $group: {
+          _id: {
+            playerTag: "$playerTag",
+            deck: {
+              $map: {
+                input: "$deck",
+                as: "card",
+                in: {
+                  name: "$$card.name",
+                  id: "$$card.id"
+                }
+              }
+            }
+          },
+          battles: { $sum: 1 },
+          wins: { $sum: { $cond: ["$victory", 1, 0] } },
+          lastBattleTime: { $max: "$battleTime" }
+        }
+      },
+      {
+        $addFields: {
+          winRate: {
+            $divide: ["$wins", "$battles"]
+          }
+        }
+      },
+      {
+        $match: {
+          "battles": { $gte: 3 },
+          "winRate": { $gt: 0.4 }
+        }
+      },
+      {
+        $sort: {
+          "winRate": -1
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          playerTag: "$_id.playerTag",
+          deck: "$_id.deck",
+          totalBattles: "$battles",
+          wins: 1,
+          winRate: {
+            $round: [
+              { $multiply: ["$winRate", 100] },
+              2
+            ]
+          },
+          lastUsed: "$lastBattleTime"
+        }
+      }
+    ]).toArray();
+
+    res.json(resultado);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erro ao buscar dados.");
+  }
+});
+
 app.get('/consulta3', async (req, res) => {
   try {
     const db = client.db(dbName);
-    const players = db.collection('players');
+    const playerbattles = db.collection('playerbattles');
 
-    const resultado = await players.find(
-      { trophies: { $gt: 7000 } },
-      { projection: { name: 1, trophies: 1, _id: 0 } }
-    ).toArray();
+    const resultado = await playerbattles.aggregate([
+      {
+        $match: {
+          $or: [
+            {
+              "team.cards": {
+                $all: [
+                  {
+                    $elemMatch: {
+                      name: "Witch"
+                    }
+                  },
+                  {
+                    $elemMatch: {
+                      name: "Mini P.E.K.K.A"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "opponent.cards": {
+                $all: [
+                  {
+                    $elemMatch: {
+                      name: "Witch"
+                    }
+                  },
+                  {
+                    $elemMatch: {
+                      name: "Mini P.E.K.K.A"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        $project: {
+          teamDefeats: {
+            $cond: {
+              if: {
+                $lt: [
+                  { $arrayElemAt: ["$team.crowns", 0] },
+                  { $arrayElemAt: ["$opponent.crowns", 0] }
+                ]
+              },
+              then: 1,
+              else: 0
+            }
+          },
+          opponentDefeats: {
+            $cond: {
+              if: {
+                $lt: [
+                  { $arrayElemAt: ["$opponent.crowns", 0] },
+                  { $arrayElemAt: ["$team.crowns", 0] }
+                ]
+              },
+              then: 1,
+              else: 0
+            }
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalTeamDefeats: { $sum: "$teamDefeats" },
+          totalOpponentDefeats: { $sum: "$opponentDefeats" }
+        }
+      },
+      {
+        $addFields: {
+          TotalDefeats: { $add: ["$totalTeamDefeats", "$totalOpponentDefeats"] }
+        }
+      }
+    ]).toArray();
 
-    res.json(resultado);
+    res.json(resultado[0]);
   } catch (err) {
     console.error(err);
     res.status(500).send("Erro ao buscar dados.");
