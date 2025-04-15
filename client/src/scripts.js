@@ -15,7 +15,7 @@ async function fetchDadosConsulta3() {
 }
 
 async function fetchDadosConsulta4() {
-  const res = await fetch('http://localhost:3000/consulta4');
+  const res = await fetch('https://clash-royale-stats-l691.onrender.com/consulta4');
   return res.json();
 }
 
