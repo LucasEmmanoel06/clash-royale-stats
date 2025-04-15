@@ -377,6 +377,62 @@ app.get('/consulta4', async (req, res) => {
   }
 });
 
+app.get('/consultaextra1', async (req, res) => {
+  try {
+    const db = client.db(dbName);
+    const playerbattles = db.collection('playerbattles');
+
+    const resultado = await playerbattles.aggregate([
+      { $unwind: "$team" },
+      { $unwind: "$opponent" }, // Garante que o oponente seja tratado corretamente
+      {
+        $project: {
+          teamCards: "$team.cards.name",
+          teamCrowns: "$team.crowns",
+          opponentCrowns: "$opponent.crowns"
+        }
+      },
+      {
+        $addFields: {
+          hasBoth: {
+            $eq: [
+              { $size: { $setIntersection: [["Witch", "Giant"], "$teamCards"] } },
+              2
+            ]
+          },
+          isWin: { $gt: ["$teamCrowns", "$opponentCrowns"] }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalMatches: { $sum: { $cond: ["$hasBoth", 1, 0] } },
+          totalWins: { $sum: { $cond: [{ $and: ["$hasBoth", "$isWin"] }, 1, 0] } }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          totalMatches: 1,
+          totalWins: 1,
+          winRate: {
+            $cond: [
+              { $eq: ["$totalMatches", 0] },
+              0,
+              { $multiply: [{ $divide: ["$totalWins", "$totalMatches"] }, 100] }
+            ]
+          }
+        }
+      }
+    ]).toArray();
+
+    res.json(resultado[0] || { totalMatches: 0, totalWins: 0, winRate: 0 });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erro ao buscar dados.");
+  }
+});
+
 app.get('/test-connection', (req, res) => {
   res.json({ message: 'Conexão bem-sucedida!' });
 });

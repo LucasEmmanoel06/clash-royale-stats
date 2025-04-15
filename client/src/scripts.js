@@ -19,6 +19,11 @@ async function fetchDadosConsulta4() {
   return res.json();
 }
 
+async function fetchDadosConsultaExtra1() {
+  const res = await fetch('http://localhost:3000/consultaextra1');
+  return res.json();
+}
+
 // Funções Render
 async function renderConsulta1() {
   const data = await fetchDadosConsulta1();
@@ -90,8 +95,26 @@ async function renderConsulta4() {
   }
 }
 
+async function renderConsultaExtra1() {
+  try {
+    const dados = await fetchDadosConsultaExtra1();
+    const container = document.getElementById('consultaextra1-container'); // Elemento onde os dados serão exibidos
+
+    container.innerHTML = `
+      <p><strong>Total de Partidas com Witch e Giant:</strong> ${dados.totalMatches}</p>
+      <p><strong>Total de Vitórias:</strong> ${dados.totalWins}</p>
+      <p><strong>Taxa de Vitória:</strong> ${dados.winRate.toFixed(2)}%</p>
+    `;
+  } catch (error) {
+    console.error('Erro ao renderizar consultaextra1:', error);
+    const container = document.getElementById('consultaextra1-container');
+    container.innerHTML = '<p>Erro ao carregar os dados.</p>'; // Mensagem de erro
+  }
+}
+
 // Inicialização das renderizações
 renderConsulta1();
 renderConsulta2();
 renderConsulta3();
 renderConsulta4();
+renderConsultaExtra1();
