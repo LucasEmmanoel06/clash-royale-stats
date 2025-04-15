@@ -292,6 +292,91 @@ app.get('/consulta3', async (req, res) => {
   }
 });
 
+app.get('/consulta4', async (req, res) => {
+  try {
+    const db = client.db(dbName);
+    const playerbattles = db.collection('playerbattles');
+
+    const resultado = await playerbattles.aggregate([
+      {
+        $set: {
+          winner: {
+            $cond: {
+              if: {
+                $gt: [
+                  {
+                    $arrayElemAt: ["$team.crowns", 0]
+                  },
+                  {
+                    $arrayElemAt: [
+                      "$opponent.crowns",
+                      0
+                    ]
+                  }
+                ]
+              },
+              then: "$team",
+              else: "$opponent"
+            }
+          },
+          loser: {
+            $cond: {
+              if: {
+                $gt: [
+                  {
+                    $arrayElemAt: ["$team.crowns", 0]
+                  },
+                  {
+                    $arrayElemAt: [
+                      "$opponent.crowns",
+                      0
+                    ]
+                  }
+                ]
+              },
+              then: "$opponent",
+              else: "$team"
+            }
+          }
+        }
+      },
+      {
+        $match: {
+          "winner.cards.name": "Miner"
+        }
+      },
+      {
+        $match: {
+          $expr: {
+            $lt: [
+              {
+                $arrayElemAt: [
+                  "$winner.startingTrophies",
+                  0
+                ]
+              },
+              {
+                $arrayElemAt: [
+                  "$loser.startingTrophies",
+                  0
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        $count: "wins_with_miner_as_winner"
+      }
+    ]).toArray();
+
+    res.json(resultado[0] || { victoriesWithMiner: 0 });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erro ao buscar dados.");
+  }
+});
+
 app.get('/test-connection', (req, res) => {
   res.json({ message: 'Conexão bem-sucedida!' });
 });

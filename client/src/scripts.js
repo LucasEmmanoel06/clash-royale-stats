@@ -14,6 +14,11 @@ async function fetchDadosConsulta3() {
   return res.json();
 }
 
+async function fetchDadosConsulta4() {
+  const res = await fetch('http://localhost:3000/consulta4');
+  return res.json();
+}
+
 // Funções Render
 async function renderConsulta1() {
   const data = await fetchDadosConsulta1();
@@ -70,7 +75,23 @@ async function renderConsulta3() {
   }
 }
 
+async function renderConsulta4() {
+  try {
+    const dados = await fetchDadosConsulta4(); // Busca os dados da API
+    const container = document.getElementById('consulta4-container'); // Elemento onde os dados serão exibidos
+
+    container.innerHTML = `
+      <p><strong>Vitórias com Miner:</strong> ${dados.wins_with_miner_as_winner || 0}</p>
+    `;
+  } catch (error) {
+    console.error('Erro ao renderizar consulta 4:', error);
+    const container = document.getElementById('consulta4-container');
+    container.innerHTML = '<p>Erro ao carregar os dados.</p>'; // Mensagem de erro
+  }
+}
+
 // Inicialização das renderizações
 renderConsulta1();
 renderConsulta2();
 renderConsulta3();
+renderConsulta4();
