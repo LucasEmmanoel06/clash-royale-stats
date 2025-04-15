@@ -20,22 +20,22 @@ async function fetchDadosConsulta4() {
 }
 
 async function fetchDadosConsultaExtra1() {
-  const res = await fetch('http://localhost:3000/consultaextra1');
+  const res = await fetch('https://clash-royale-stats-l691.onrender.com/consultaextra1');
   return res.json();
 }
 
 async function fetchDadosConsultaExtra3() {
-  const res = await fetch('http://localhost:3000/consultaextra3');
+  const res = await fetch('https://clash-royale-stats-l691.onrender.com/consultaextra3');
   return res.json();
 }
 
 async function fetchDadosConsultaExtra2() {
-  const res = await fetch('http://localhost:3000/consultaextra2');
+  const res = await fetch('https://clash-royale-stats-l691.onrender.com/consultaextra2');
   return res.json();
 }
 
 async function fetchDadosConsulta5() {
-  const res = await fetch('http://localhost:3000/consulta5');
+  const res = await fetch('https://clash-royale-stats-l691.onrender.com/consulta5');
   return res.json();
 }
 
