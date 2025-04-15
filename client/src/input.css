@@ -24,3 +24,15 @@ body {
     box-shadow: 0 2px 0 #000, inset 0 -4px 0 rgba(118, 160, 191, .2), inset 0 4px 0 hsla(0, 0%, 100%, .25);
     color:white;
 }
+
+#consultaextra {
+    background: linear-gradient(157.02deg, #54288F, #6C32A5 30.64%, #331866 85.11%), linear-gradient(180deg, #393947, #1C1C25);
+border-radius: 20px;
+border: 3px solid #000;
+padding: 20px;
+margin: 20px auto;
+width: 80%;
+max-width: 800px;
+box-shadow: 0 2px 0 #000, inset 0 -4px 0 rgba(118, 160, 191, .2), inset 0 4px 0 hsla(0, 0%, 100%, .25);
+color:white;
+}
